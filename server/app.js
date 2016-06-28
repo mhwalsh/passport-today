@@ -1,8 +1,10 @@
 var express = require('express');
 // var pg = require('pg');
-// var bodyParser = require('body-parser');
+var bodyParser = require('body-parser');
 
 var app = express();
+
+app.use(bodyParser.urlencoded({extended: true}));
 
 app.use(express.static('public'));
 
