@@ -2,6 +2,10 @@ var express = require('express');
 var router = express.Router();
 
 var path = require('path');
+var pg = require('pg');
+
+//require modules
+var connection = require('../modules/connection');
 
 // fulfills get requests at /register
 router.get('/', function(req, res) {
@@ -15,8 +19,22 @@ router.post('/', function(req, res) {
   console.log('password = ', req.body.password);
 
   //connect to the database!!
+  pg.connect(connection, function (err, client, done) {
+    client.query("INSERT INTO users (username, password) VALUES ($1, $2) RETURNING id",
+     [req.body.username, req.body.password],
+      function(err, result) {
+        done();
 
-  res.sendStatus(200);
+        if(err){
+          console.log(err);
+          res.sendStatus(500);
+        }else{
+          // console.log(result);
+          console.log('success', result.rows[0].id);
+          res.redirect('/');
+        }
+    });
+  });
 });
 
 module.exports = router;
