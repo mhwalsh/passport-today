@@ -5,13 +5,23 @@ var bodyParser = require('body-parser');
 var app = express();
 
 var passport = require('../strategies/user-local.js');
+var session = require('express-session');
 
 app.use(bodyParser.urlencoded({extended: true}));
 
 app.use(express.static('public'));
 
+app.use(session({
+  secret: 'secret',
+  key: 'user',
+  resave: 'true',
+  saveUninitialized: false,
+  cookie: {maxage: 60000, secure: false}
+}));
+
 //init passport
 app.use(passport.initialize());
+app.use(passport.session());
 
 // require routers
 var index = require('../routes/index');
