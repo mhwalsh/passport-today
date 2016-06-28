@@ -10,6 +10,9 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 app.use(express.static('public'));
 
+//init passport
+app.use(passport.initialize());
+
 // require routers
 var index = require('../routes/index');
 var register = require('../routes/register');
