@@ -9,10 +9,9 @@ var session = require('express-session');
 
 app.use(bodyParser.urlencoded({extended: true}));
 
-app.use(express.static('public'));
 
 app.use(session({
-  secret: 'secret',
+  secret: 'any string',
   key: 'user',
   resave: 'true',
   saveUninitialized: false,
@@ -26,6 +25,8 @@ app.use(passport.session());
 // require routers
 var index = require('../routes/index');
 var register = require('../routes/register');
+
+app.use(express.static('public'));
 
 //use routes
 app.use('/register', register);

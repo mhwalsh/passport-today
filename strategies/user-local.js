@@ -3,6 +3,7 @@ var LocalStrategy = require('passport-local').Strategy;
 var pg = require('pg');
 
 //require module
+var encryptionLib = require('../modules/encryption');
 var connection = require('../modules/connection');
 
 // serialize
@@ -26,7 +27,7 @@ passport.deserializeUser(function(id, passDone) {
         pgDone();
 
         if(result.rows.length >= 1){
-          console.log(result.rows[0]);
+          // console.log(result.rows[0]);
           return passDone(null, result.rows[0]);
         }
 
@@ -61,18 +62,20 @@ passport.use('local', new LocalStrategy(
               return passDone(null, false);
 
             }else{
-              console.log('result.rows =', result.rows);
+              // console.log('result.rows =', result.rows);
 
               //found a something
               if(result.rows.length >= 1){
 
                 var passwordDB = result.rows[0].password;
-                if(password === passwordDB){
-                  console.log('correct pass');
+
+                //compare method
+                if(encryptionLib.comparePassword(password, passwordDB)){
+                  // console.log('correct pass');
                   return passDone(null, result.rows[0]);
                 }
               }
-              console.log('nope');
+              // console.log('nope');
               return passDone(null, false);
             }
         });

@@ -5,6 +5,7 @@ var path = require('path');
 var pg = require('pg');
 
 //require modules
+var encryptionLib = require('../modules/encryption');
 var connection = require('../modules/connection');
 
 // fulfills get requests at /register
@@ -20,8 +21,14 @@ router.post('/', function(req, res) {
 
   //connect to the database!!
   pg.connect(connection, function (err, client, done) {
+
+    var userToSave = {
+      username: req.body.username,
+      password: encryptionLib.encryptPassword(req.body.password)
+    };
+
     client.query("INSERT INTO users (username, password) VALUES ($1, $2) RETURNING id",
-     [req.body.username, req.body.password],
+     [userToSave.username, userToSave.password],
       function(err, result) {
         done();
 
